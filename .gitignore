@@ -1,0 +1,63 @@
+
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# compiled output
+dist
+logs/**
+tmp
+.tmp
+*/**/dist
+target/
+yarn.lock
+# dependencies
+node_modules
+bower_components
+/apps/*/src/assets/js/draw2d.js
+
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/css-variables.code-snippets
+!.vscode/generate-css-var-snippets.js
+!.vscode/CSS-Variable-Snippets-Generation-Instruction.md
+
+# IDE - WebStorm
+.webstorm/*
+!.webstorm/CSS_Variables_ES.xml
+!.webstorm/generate-css-var-webstorm.js
+!.webstorm/CSS-Variable-Snippets-Generation-Instruction.md
+
+# misc
+/.angular/cache
+/.sass-cache
+/connect.lock
+/coverage/*
+/libpeerconnection.log
+npm-debug.log
+testem.log
+/typings
+
+# e2e
+/e2e/*.js
+/e2e/*.map
+
+#System Files
+.DS_Store
+Thumbs.db
+git
+yarn-error.log
+$Recycle.Bin
+
+.env

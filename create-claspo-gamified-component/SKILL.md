@@ -1,21 +1,114 @@
 ---
 name: create-claspo-gamified-component
 description: >
-  Create new Claspo gamified (prize-based gaming) web components extending BaseGamifiedComponent with prize pool integration,
+  Create or edit Claspo gamified (prize-based gaming) web components extending BaseGamifiedComponent with prize pool integration,
   game mechanics, animations, and editor controls.
   Use when: (1) Creating a gamified/gaming component (scratch card, gift box, wheel of fortune, treasure hunt, memory cards, slot machine, etc.),
   (2) User says "create gamified component", "new game component", "add a prize game", "build a scratch card/gift box/wheel",
-  (3) Any component involving prize-based gaming mechanics (spin, scratch, pick, search, match, gesture),
-  (4) Extending BaseGamifiedComponent or working with connectToPrizePool/connectToForm,
-  (5) Creating components with game animations, demo mode, and prize pool integration.
+  (3) Edit/update/modify existing gamified components,
+  (4) User says "edit gamified component", "update game component", "fix/change existing game", "continue working on {name}",
+  (5) Any modification to an existing component with prize-based gaming mechanics,
+  (6) Any component involving prize-based gaming mechanics (spin, scratch, pick, search, match, gesture),
+  (7) Extending BaseGamifiedComponent or working with connectToPrizePool/connectToForm,
+  (8) Creating components with game animations, demo mode, and prize pool integration.
   Do NOT use for: regular presentation or input components without gaming mechanics — use create-claspo-component instead.
 ---
 
-# Create Claspo Gamified Component
+# Create or Edit Claspo Gamified Component
 
-Create a new Claspo gamified (prize-based gaming) web component. All gamified components extend `BaseGamifiedComponent` (which extends `WcElement`) and integrate with the Claspo prize pool system.
+Create or edit a Claspo gamified (prize-based gaming) web component. All gamified components extend `BaseGamifiedComponent` (which extends `WcElement`) and integrate with the Claspo prize pool system.
 
 **Design principle:** Gamified components should be colorful and animated by default. Game items (eggs, boxes, cards, etc.) should each have a distinct, vibrant color — never the same color for all items. Themes provide numbered asset files (`1.svg`, `2.svg`, ...) with different colors per item, cycled via `images[index % images.length]`. Animations (hover, idle jelly, ready-to-play pop, entry) are mandatory for all game items.
+
+---
+
+## Step 0: Detect Intent (Create vs Edit)
+
+Before asking any questions, determine whether the user wants to **create** a new component or **edit** an existing one.
+
+**Detection signals:**
+
+| Signal words | Intent |
+|---|---|
+| "create", "new", "build", "add", "make" | → **CREATE** — skip to Step 1 |
+| "edit", "update", "modify", "fix", "change", "continue", "work on", "improve" | → **EDIT** — go to Step E1 |
+
+If ambiguous → ask: "Are you creating a new gamified component or editing an existing one?"
+
+---
+
+## EDIT Flow (Steps E1–E4)
+
+### Step E1: Identify the Component
+
+If the user named the component explicitly → extract PascalCase base name using the same normalization rules as Q1 (strip "Component" suffix, split by spaces/hyphens/underscores, capitalize, join). Derive `{Name}Component` class name and directory.
+
+If no name was given → auto-scan for `*Component/` directories containing a `.manifest.js` file with `componentType: "PRIZE_BASED_GAMING"`. Present the found list and ask the user to select one.
+
+### Step E2: Locate and Read All Files
+
+Find the component directory and read all files present:
+
+- `{Name}Component.js`
+- `{Name}.manifest.js`
+- `getStyleElement.js`
+- `defaultPrizeStyles.js` (if present)
+- `{Name}Utils.js` (if present)
+- `assets/img/component-icon.svg`
+
+Also verify that `BaseGamifiedComponent` is present in the project. If not found, stop and tell the user:
+
+> "BaseGamifiedComponent was not found in this project. This is a required base class for all gamified components. Please obtain it from the Claspo technical team before proceeding."
+
+### Step E3: Validate Component
+
+Run all checks below against the files read in E2. Group findings by severity.
+
+**Gamified component checks:**
+- [ ] Class extends `BaseGamifiedComponent`
+- [ ] Manifest has `componentType: "PRIZE_BASED_GAMING"`
+- [ ] Manifest has `PRIZE_SETTINGS` control in `floatingControlsModel`
+- [ ] Manifest does NOT include forbidden fields: `children`, `focusParentOnClick`, `preventDraggable`, `recursiveRemove`, `actionsConditions`, `isExternalStartCapable`, `waitForResourcesLoad`, `resourcesPropPaths`, `events`, `syncEnabled`, `stylesImitationEnabled`
+- [ ] Manifest controls do NOT include sync-related fields: `hideSyncSelect`, `syncSelectDisplayCondition`, `syncSelectOptions`
+- [ ] `observeProps` calls `this.applyAutoAdaptiveStyles(next.adaptiveStyles)`
+- [ ] `metaDescription.label` has an `"en"` key
+- [ ] Property pane labels are human-readable strings (e.g., `"Grid Size"`) — not `DOCUMENT_*` keys
+- [ ] Game items use distinct colors (themed assets cycled via `images[index % images.length]`)
+- [ ] `getStyleElement.js` contains animation patterns (hover, idle, ready-to-play)
+
+**Naming convention checks (from create-claspo-component):**
+- [ ] Directory is named `{Name}Component/`
+- [ ] Class is named `{Name}Component`
+- [ ] Manifest file is named `{Name}.manifest.js`
+- [ ] Custom element tag is kebab-case of the base name
+- [ ] No `Sys` prefix unless explicitly intentional
+- [ ] Class methods are normal (not arrow functions), except `constructor`, `connectedCallback`, `disconnectedCallback`, static methods, getters/setters
+
+If violations found, report them and ask whether to fix:
+
+```
+Found {N} issue(s) in {Name}Component:
+
+MUST FIX:
+1. Missing PRIZE_SETTINGS control in manifest — required for all gamified components
+   Suggested fix: add PRIZE_SETTINGS to floatingControlsModel
+
+SUGGESTIONS:
+2. Property pane label uses DOCUMENT_* key — should be a human-readable string
+   Current: "DOCUMENT_GRID_SIZE" → Suggested: "Grid Size"
+```
+
+Ask: "Would you like me to fix these issues? (yes / no / select)"
+
+### Step E4: Proceed with Edit Request
+
+After validation (and any optional fixes applied), ask: "What changes would you like to make?"
+
+Apply all requested edits following the same rules and conventions as the CREATE flow (Steps 2–5). Generate only the files that need to change.
+
+---
+
+## CREATE Flow
 
 ## Step 1: Ask Questions
 
@@ -62,6 +155,12 @@ Present derived names AND inferred mechanic type for confirmation before proceed
 Auto-detect by scanning for directories containing `*Component/` subdirectories with `.manifest.js` files. Common locations: `components/` (plugin), `src/` (claspo-components repo).
 
 If multiple candidates or none found, ask the user.
+
+**Check for BaseGamifiedComponent.** After locating the components directory, verify that `BaseGamifiedComponent` is present in the project (search for `BaseGamifiedComponent.js` or its import in existing components). If not found, stop and tell the user:
+
+> "BaseGamifiedComponent was not found in this project. This is a required base class for all gamified components. Please obtain it from the Claspo technical team before proceeding."
+
+Do not continue with code generation until the user confirms it's available.
 
 **Never add `Sys` prefix by default.** Only add if user explicitly says "internal component" / "add Sys prefix" / "system component". Do NOT ask.
 

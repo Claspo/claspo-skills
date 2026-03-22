@@ -1,0 +1,133 @@
+{
+  "skill_name": "create-claspo-gamified-component",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "create a new gamified component called EasterEgg — the player clicks one of 6 eggs to reveal their prize. eggs should have different colors per theme.",
+      "expected_output": "Skill detects CREATE intent (Step 0), proceeds to Step 1 (Q1: name/mechanics), extracts 'EasterEgg' as the component name, classifies mechanic as 'Pick', presents derived names for confirmation, then asks the next question. Does NOT generate files before collecting all required info.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "create_intent_detected",
+          "text": "Response proceeds with CREATE flow — does NOT ask 'are you creating or editing?'"
+        },
+        {
+          "id": "asks_q1_question",
+          "text": "Response asks Q1 (game name and mechanics) or confirms the name/mechanic extracted from the prompt"
+        },
+        {
+          "id": "derives_component_name",
+          "text": "Response mentions 'EasterEggComponent' or shows derived names table"
+        },
+        {
+          "id": "classifies_pick_mechanic",
+          "text": "Response identifies the mechanic type as 'Pick' (player selects one item from a set)"
+        },
+        {
+          "id": "no_premature_code",
+          "text": "Response does NOT contain generated JS/component code before all questions are answered"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "edit the GiftBox component — I want to add a number-of-boxes option so the editor can choose between 3 and 6 boxes",
+      "expected_output": "Skill detects EDIT intent (Step 0), goes to Step E1 (identifies GiftBoxComponent), attempts to locate and read its files (E2), runs validation checklist (E3), reports any violations grouped by MUST FIX / SUGGESTIONS, then proceeds to apply the requested change.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "edit_intent_detected",
+          "text": "Response proceeds with EDIT flow (mentions E1/E2/E3 steps or equivalent actions like locating files)"
+        },
+        {
+          "id": "searches_for_component",
+          "text": "Response mentions searching for or reading GiftBoxComponent files"
+        },
+        {
+          "id": "runs_validation",
+          "text": "Response includes a validation step or mentions checking the component against rules"
+        },
+        {
+          "id": "acknowledges_edit_request",
+          "text": "Response acknowledges the number-of-boxes (3–6) change request"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "I need to work on the wheel of fortune component",
+      "expected_output": "Skill detects ambiguous intent (Step 0) and asks the clarification question: 'Are you creating a new gamified component or editing an existing one?'",
+      "files": [],
+      "assertions": [
+        {
+          "id": "asks_clarification",
+          "text": "Response explicitly asks whether the user wants to create a new component or edit an existing one"
+        },
+        {
+          "id": "does_not_assume_intent",
+          "text": "Response does NOT immediately proceed with either CREATE or EDIT flow without asking"
+        },
+        {
+          "id": "mentions_both_options",
+          "text": "Response presents both options (create / edit) for the user to choose"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "update my ScratchCard component — fix the animations and make sure everything is correct",
+      "expected_output": "Skill detects EDIT intent (Step 0), identifies ScratchCardComponent, reads all its files (E2), runs full validation (E3) — specifically checks animation patterns in getStyleElement.js, extends BaseGamifiedComponent, has PRIZE_SETTINGS, etc. Reports issues grouped by severity before touching the animation fix.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "edit_intent_detected",
+          "text": "Response proceeds with EDIT flow, not CREATE"
+        },
+        {
+          "id": "searches_for_component",
+          "text": "Response mentions locating or reading ScratchCardComponent files"
+        },
+        {
+          "id": "runs_validation",
+          "text": "Response includes a validation step checking the component against rules"
+        },
+        {
+          "id": "checks_animations",
+          "text": "Validation specifically mentions checking animation patterns (hover, idle, ready-to-play) in getStyleElement.js"
+        },
+        {
+          "id": "groups_severity",
+          "text": "If issues are found, they are grouped by severity (MUST FIX vs SUGGESTIONS)"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "create a new gamified component called CoinFlip — the user flips a coin to reveal their prize. working directory is /tmp/empty-project which has no existing components.",
+      "expected_output": "Skill detects CREATE intent, scans /tmp/empty-project for BaseGamifiedComponent, does NOT find it, and stops with the message that BaseGamifiedComponent must be obtained from the Claspo technical team. Does NOT proceed to Q2 or generate any code.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "create_intent_detected",
+          "text": "Response proceeds with CREATE flow"
+        },
+        {
+          "id": "checks_for_base_class",
+          "text": "Response mentions scanning for or checking the presence of BaseGamifiedComponent in the project"
+        },
+        {
+          "id": "reports_missing_base_class",
+          "text": "Response explicitly states that BaseGamifiedComponent was not found"
+        },
+        {
+          "id": "references_claspo_team",
+          "text": "Response tells the user to obtain BaseGamifiedComponent from the Claspo technical team"
+        },
+        {
+          "id": "does_not_generate_code",
+          "text": "Response does NOT generate any component code or proceed to Q2 while BaseGamifiedComponent is missing"
+        }
+      ]
+    }
+  ]
+}

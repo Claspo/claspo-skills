@@ -145,6 +145,8 @@ For file structure and all code templates, see [references/code-templates.md](re
 
 For the manifest template and all manifest-related guidance, see [references/manifest-guide.md](references/manifest-guide.md).
 
+All generated components MUST follow accessibility conventions. See [references/accessibility-guide.md](references/accessibility-guide.md) — these rules are mandatory, not optional.
+
 ---
 
 ## Step 4: Auto-Registration
@@ -178,6 +180,16 @@ Internal/system-managed fields: `children`, `focusParentOnClick`, `preventDragga
 ### Sync-related control fields to NEVER use
 
 Since we never add `syncEnabled`, these must NEVER appear on any control: `hideSyncSelect`, `syncSelectDisplayCondition`, `syncSelectOptions`.
+
+### Accessibility is mandatory
+
+Generated code MUST follow the rules in [references/accessibility-guide.md](references/accessibility-guide.md):
+- Interactive elements get a role, `tabindex="0"` (only if not a native control), `aria-label` (i18n), and a keydown handler for Enter/Space.
+- State attributes (`aria-checked`, `aria-selected`, `aria-expanded`, `aria-activedescendant`) update reactively.
+- Focus is visible via `:focus-visible`, never suppressed.
+- Animations respect `prefers-reduced-motion`.
+
+Do NOT generate interactive components without these. If a component has any clickable/selectable element, the keyboard handler and ARIA attributes are required, not optional.
 
 ### Controls are conditional on Q5
 

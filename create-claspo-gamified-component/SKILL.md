@@ -76,6 +76,17 @@ Run all checks below against the files read in E2. Group findings by severity.
 - [ ] Game items use distinct colors (themed assets cycled via `images[index % images.length]`)
 - [ ] `getStyleElement.js` contains animation patterns (hover, idle, ready-to-play)
 
+**Accessibility checks** (see [../create-claspo-component/references/accessibility-guide.md](../create-claspo-component/references/accessibility-guide.md)):
+- [ ] Each interactive game item has `role="button"` (or `role="radio"` for choice-based mechanics)
+- [ ] Each interactive game item has `tabindex="0"`
+- [ ] Each interactive game item has a localized `aria-label` (i18n map, not hardcoded English)
+- [ ] Each interactive game item has a keydown handler that triggers click on Enter/Space (with `event.preventDefault()`)
+- [ ] State attributes (`aria-checked`, `aria-selected`) update reactively where applicable
+- [ ] Decorative SVG/img use `aria-hidden="true"`
+- [ ] Component CSS includes `:focus-visible` outline (never bare `outline: none`)
+- [ ] Animations respect `@media (prefers-reduced-motion: reduce)`
+- [ ] If component has an overlay/picker/menu, focus is restored to the trigger on close, and Escape closes the overlay
+
 **Naming convention checks (from create-claspo-component):**
 - [ ] Directory is named `{Name}Component/`
 - [ ] Class is named `{Name}Component`
@@ -262,6 +273,7 @@ Before generating code, read platform interfaces AND existing component examples
 - **Code templates**: See [references/code-templates.md](references/code-templates.md)
 - **Manifest template and controls**: See [references/manifest-guide.md](references/manifest-guide.md)
 - **Animation and interaction patterns**: See [references/animation-patterns.md](references/animation-patterns.md)
+- **Accessibility rules (mandatory)**: See [../create-claspo-component/references/accessibility-guide.md](../create-claspo-component/references/accessibility-guide.md). Gamified items (boxes, eggs, sectors, scratch surfaces) ARE interactive elements and MUST follow the custom-button pattern.
 - **Documentation guides**: Start with `https://docs.claspo.io/llms.txt` for full index
 
 Pick the most similar existing component based on mechanic type (see table in Q1) and read it as a code pattern.
@@ -320,4 +332,5 @@ Only include editor controls for properties the user selected. No selection = no
 - Always call `this.applyAutoAdaptiveStyles(next.adaptiveStyles)` inside `observeProps`.
 - **Property pane control labels must be human-readable strings** (e.g., `"Grid Size"`, `"Gap Between Cards"`). Do NOT use `DOCUMENT_*` keys.
 - For `metaDescription.label`, generate `"en"` only.
+- Generated game items MUST include role + tabindex + i18n aria-label + Enter/Space keydown handler. Animations MUST respect `prefers-reduced-motion`. See [../create-claspo-component/references/accessibility-guide.md](../create-claspo-component/references/accessibility-guide.md).
 - For all available methods, see [references/platform-api.md](references/platform-api.md).

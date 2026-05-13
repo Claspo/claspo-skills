@@ -128,6 +128,62 @@
           "text": "Response does NOT generate any component code or proceed to Q2 while BaseGamifiedComponent is missing"
         }
       ]
+    },
+    {
+      "id": 6,
+      "prompt": "create a gamified component called LuckyDoors — the player clicks one of 4 doors to reveal their prize.",
+      "expected_output": "Skill detects CREATE intent, runs through Q1–Q6, and when generating LuckyDoorsComponent the generated JS/template assigns role='button', tabindex='0', a localized aria-label (via i18n map, not hardcoded English), and a keydown handler that triggers click on Enter/Space to each interactive door element. Generated CSS includes :focus-visible outline and respects prefers-reduced-motion for animations.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "interactive_role_present",
+          "text": "Generated component code assigns role=\"button\" (or role=\"radio\") to each interactive door/item"
+        },
+        {
+          "id": "tabindex_present",
+          "text": "Generated component code assigns tabindex=\"0\" to each interactive item"
+        },
+        {
+          "id": "aria_label_localized",
+          "text": "Generated code uses an i18n translation map for aria-label (does NOT hardcode an English string)"
+        },
+        {
+          "id": "keydown_handler_present",
+          "text": "Generated code registers a keydown handler that triggers click on Enter and Space (with event.preventDefault())"
+        },
+        {
+          "id": "focus_visible_css",
+          "text": "Generated styles include :focus-visible outline; do NOT use bare outline: none"
+        },
+        {
+          "id": "reduced_motion_respected",
+          "text": "Generated styles or JS branch on @media (prefers-reduced-motion: reduce) or window.matchMedia equivalent for any animation"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "update the GiftBox component — make sure everything is correct",
+      "expected_output": "Skill detects EDIT intent, runs E1/E2 to locate and read GiftBoxComponent files, then E3 validation. If gift box items lack role/tabindex/aria-label/keydown handler, or if styles use bare outline: none, or animations ignore prefers-reduced-motion, those are reported as MUST FIX accessibility violations grouped under an 'Accessibility checks' section. Asks user before applying fixes.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "edit_intent_detected",
+          "text": "Response proceeds with EDIT flow"
+        },
+        {
+          "id": "runs_a11y_validation",
+          "text": "E3 validation explicitly checks accessibility — mentions role, tabindex, aria-label, keydown handler, :focus-visible, or prefers-reduced-motion"
+        },
+        {
+          "id": "groups_a11y_findings",
+          "text": "If a11y issues are found they are grouped/labeled as accessibility violations (separate from naming or manifest checks)"
+        },
+        {
+          "id": "asks_before_fixing",
+          "text": "Response asks the user whether to apply fixes — does NOT silently rewrite files"
+        }
+      ]
     }
   ]
 }

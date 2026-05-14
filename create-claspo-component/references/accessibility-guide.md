@@ -8,6 +8,21 @@ Claspo widgets render on third-party websites and reach users with screen reader
 
 Public mirror of canonical patterns: <https://github.com/Claspo/claspo-components-public>.
 
+### EU Accessibility Act (EAA) conformance
+
+The European Accessibility Act (Directive 2019/882) became enforceable on **28 June 2025**. It applies to consumer-facing digital products and services placed on the EU market — e-commerce platforms, banking interfaces, and embedded widgets that participate in those experiences. Claspo widgets that ship on customer websites serving EU consumers fall within scope when they collect input, present prizes, or otherwise mediate a commercial interaction.
+
+The conformance baseline is **WCAG 2.1 Level AA**. The mandatory rules below are the practical implementation path:
+
+- Roles, names (`aria-label`), and states (`aria-checked`/`-selected`/`-expanded`) → WCAG 4.1.2 Name, Role, Value
+- Keyboard handlers + `tabindex` → WCAG 2.1.1 Keyboard
+- Visible focus via `:focus-visible` → WCAG 2.4.7 Focus Visible
+- `prefers-reduced-motion` support → WCAG 2.3.3 Animation from Interactions
+- Localized `aria-label` → WCAG 3.1.2 Language of Parts (paired with the host page's `lang` attribute)
+- Focus restoration + `Escape` close → WCAG 2.4.3 Focus Order
+
+Components that violate these rules can expose Claspo's customers to enforcement risk. Treat the rules as non-negotiable for any widget that could appear on an EU-facing site.
+
 ---
 
 ## Mandatory rules

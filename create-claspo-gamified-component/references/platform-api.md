@@ -58,7 +58,8 @@ Pick the most similar one as a code pattern:
 - `this.getProps()` — get current props
 - `this.getShared()` — get shared document settings
 - `this.getEnvironment()` — get current platform (`'desktop'` | `'mobile'`)
-- `this.isStaticRenderMode()` — check static mode
+- `this.isStaticRenderMode()` — check static mode (preview, on site render)
+- `this.isUpdatingRenderMode()` — check updating mode (editor canvas)
 - `this.observeProps(cb)` — subscribe to prop changes
 - `this.observeShared(cb)` — subscribe to shared settings changes
 - `this.observeEnvironment(cb)` — subscribe to env changes

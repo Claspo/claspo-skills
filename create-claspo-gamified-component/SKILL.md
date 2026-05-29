@@ -3,7 +3,7 @@ name: create-claspo-gamified-component
 description: >
   Create or edit Claspo gamified (prize-based gaming) web components extending BaseGamifiedComponent with prize pool integration,
   game mechanics, animations, and editor controls.
-  Use when: (1) Creating a gamified/gaming component (scratch card, gift box, wheel of fortune, treasure hunt, memory cards, slot machine, etc.),
+  Use when: (1) Creating a gamified/gaming component,
   (2) User says "create gamified component", "new game component", "add a prize game", "build a scratch card/gift box/wheel",
   (3) Edit/update/modify existing gamified components,
   (4) User says "edit gamified component", "update game component", "fix/change existing game", "continue working on {name}",

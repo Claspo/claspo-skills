@@ -75,6 +75,7 @@ Run all checks below against the files read in E2. Group findings by severity.
 - [ ] Property pane labels are human-readable strings (e.g., `"Grid Size"`) — not `DOCUMENT_*` keys
 - [ ] Game items use distinct colors (themed assets cycled via `images[index % images.length]`)
 - [ ] `getStyleElement.js` contains animation patterns (hover, idle, ready-to-play)
+- [ ] If intended for multi-page flows, the component restores its played/completed/reward state and captured value on re-mount (does not reset a won game to IDLE on redraw — see "Data re-hydration on redraw")
 
 **Accessibility checks** (see [../create-claspo-component/references/accessibility-guide.md](../create-claspo-component/references/accessibility-guide.md)):
 - [ ] Each interactive game item has `role="button"` (or `role="radio"` for choice-based mechanics)
@@ -326,10 +327,18 @@ Since we never add `syncEnabled`, these must NEVER appear: `hideSyncSelect`, `sy
 
 Only include editor controls for properties the user selected. No selection = no control.
 
+### Data re-hydration on redraw
+
+In multi-page widgets the visitor can navigate between pages, and the renderer **destroys and re-creates** the component on every navigation/redraw — instance state does NOT survive. Two distinct concerns:
+
+- **Captured form value (auto-restores).** A prize/contact value bound via `connectToForm` rides on a `FormControl`, and the `FormGroup` preserves that value across navigation (same mechanism as input components — see [../create-claspo-component/SKILL.md](../create-claspo-component/SKILL.md) > "Data re-hydration on redraw"). Read it back and reflect it on (re-)mount.
+- **Game phase / completed state does NOT auto-restore.** `BaseGamifiedComponent.connectedCallback()` unconditionally calls `setGamePhase(IDLE)` — so after the visitor plays, navigates away, and returns, the game resets to a fresh playable state rather than the completed/reward state. **If the component can live in a multi-page flow, restore the played/completed/reward state on (re-)mount**: derive "already played" from the persisted form value / prize-pool connection (`connectToPrizePool`) and skip straight to `GAME_PHASES.COMPLETED` / the reward view instead of replaying. A won prize must not be re-played or lost on redraw.
+
 ### Code conventions
 
 - Write normal class methods. Babel plugin auto-transforms to arrow functions. Excluded: `constructor`, `connectedCallback`, `disconnectedCallback`, static methods, getters/setters.
 - Always call `this.applyAutoAdaptiveStyles(next.adaptiveStyles)` inside `observeProps`.
+- **Re-hydrate on redraw:** the base resets game phase to IDLE on `connectedCallback`; for multi-page use, restore the played/completed/reward state and the captured `connectToForm` value on (re-)mount — see "Data re-hydration on redraw".
 - **Property pane control labels must be human-readable strings** (e.g., `"Grid Size"`, `"Gap Between Cards"`). Do NOT use `DOCUMENT_*` keys.
 - For `metaDescription.label`, generate `"en"` only.
 - Generated game items MUST include role + tabindex + i18n aria-label + Enter/Space keydown handler. Animations MUST respect `prefers-reduced-motion`. See [../create-claspo-component/references/accessibility-guide.md](../create-claspo-component/references/accessibility-guide.md).

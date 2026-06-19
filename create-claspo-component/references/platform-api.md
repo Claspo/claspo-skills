@@ -30,6 +30,7 @@ Read these FIRST before generating code to understand available capabilities.
 **Form system:**
 - `node_modules/@claspo/renderer/form/FormControl.d.ts` — `FormControl` class (setValue, getValue, validate, etc.)
 - `node_modules/@claspo/renderer/form/FormControlValidator.interface.d.ts` — validator types
+- **Re-hydration on redraw:** views are destroyed/re-created on navigation but `FormGroup` values persist (each control is tagged with `control.viewIdx`). `createControlWithValidation()` re-attaches and `FormGroup.updateControl()` preserves the prior value (`defaultValue: formControl.getValue()`); the component must then read `control.getValue()` and reflect it into the UI on (re-)mount. See the skill's "Data re-hydration on redraw".
 
 ## Documentation Guides
 

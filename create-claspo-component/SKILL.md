@@ -191,6 +191,17 @@ Generated code MUST follow the rules in [references/accessibility-guide.md](refe
 
 Do NOT generate interactive components without these. If a component has any clickable/selectable element, the keyboard handler and ARIA attributes are required, not optional.
 
+### Data re-hydration on redraw (mandatory for input components)
+
+In multi-page widgets the visitor navigates between pages, and the renderer **destroys and re-creates** a view's components on every navigation (and on other redraws) — **component instance state does NOT survive**. The `FormGroup` (form-control values) **does** survive. So an input component **must restore its displayed value from its form control on (re-)mount**, or a value the visitor entered, navigated away from, and returned to will show blank — and break progressive lead capture / branch review in non-linear flows.
+
+Contract for every input component (`WcControlledElement`):
+- Bind via `createControlWithValidation()` in `connectedCallback`/init. When the control already exists (returning to a view) the platform **preserves the prior value automatically** (`FormGroup.updateControl()` carries `defaultValue: formControl.getValue()`).
+- Then **read the persisted value back** — `this.registeredControl.getValue()` — and **reflect it into the UI on init**, before the component is visible: set the native input's `value`/`checked`, re-apply the selected/active visual state (choice buttons, radio, checkbox list, rating, NPS/feedback), restore the displayed label (dropdown), etc.
+- **Never** keep the "shown" value only in instance fields or set it only on user input — always derive the initial display from the control value.
+
+Reference pattern (every built-in input does this): `SysInputComponent`/`SysTextAreaComponent` set `input.value = control.getValue()`; `SysDropdownInputComponent` restores the selected label from `getValue()`; `SysCheckboxListComponent`/`SysRadioGroupComponent`/`SysChoiceButtonsComponent` re-apply selected styles from `getValue()`; `SysNetPromoterScoreComponent`/`SysFeedbackComponent` call `updateSelection(control.getValue())` on mount; `SysDateComponent`/`SysConsentComponent` restore from the control value. Mirror this for any new input/data component.
+
 ### Controls are conditional on Q5
 
 Only include editor controls for style properties the user selected in Q5:
@@ -203,6 +214,7 @@ Only include editor controls for style properties the user selected in Q5:
 
 - Write normal class methods. Babel plugin auto-transforms to arrow functions. Excluded: `constructor`, `connectedCallback`, `disconnectedCallback`, static methods, getters/setters.
 - Always call `this.applyAutoAdaptiveStyles(next.adaptiveStyles, next.styles)` inside `observeProps`.
+- **Input components must re-hydrate their displayed value from the form control on (re-)mount** — read `registeredControl.getValue()` and reflect it into the UI; see "Data re-hydration on redraw".
 - **Property pane control labels must be human-readable strings** (e.g., `"Track Color"`, `"Knob Size"`). Do NOT use `DOCUMENT_*` keys — those are internal editor translation keys for built-in system controls only.
 - For `metaDescription.label`, generate `"en"` only.
 - For all available methods, see [references/platform-api.md](references/platform-api.md) > "Key WcElement Methods".

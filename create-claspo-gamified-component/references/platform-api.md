@@ -35,6 +35,7 @@ Read `components/BaseGamifiedComponent.js` for inherited behavior:
 - `this.prizePool.mapPrizeOption(option)` — map raw option to `{ id, label, value }`
 - `this.readyToPlay` — flag set by connectToForm
 - `this.isStaticEntryModule` — `true` in live widget, `false` in editor canvas
+- `onSubmitFailedWithoutView()` — override hook, a no-op by default. It is called when the game's submit fails and the widget stays on the game's page, where the visitor can press the button again to retry. If the game's result presentation grows beyond the component's own area (enlarged, centred, or layered over the page), put it back in its resting place here, so the form and its button stay visible and clickable.
 
 ## Existing Gamified Components
 
